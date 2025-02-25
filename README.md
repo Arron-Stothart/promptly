@@ -97,3 +97,10 @@ As LLMs continue to improve, the nature of prompt engineering will likely evolve
 ## 📚 Research Foundation
 
 This project builds on insights from LLM researchers and practitioners, including discussions from Anthropic's prompt engineering team about what makes prompts effective and where users typically struggle.
+
+
+## Antrhopic Prompt Improver
+![image](https://github.com/user-attachments/assets/f0c0f69a-6218-4a16-be2e-1737f7169f14)
+![57c9898911ae729e6745f4d5cc5d9c1e0e4b18df-3840x2160](https://github.com/user-attachments/assets/33aed72f-30c8-4291-a39f-985a504b7e3d)
+![c599b01a2c09335f18ac0ebd4845e91e305b95b1-2880x1620](https://github.com/user-attachments/assets/5768bfa8-2d2d-4298-9888-8ce0b68065ee)
+
