@@ -1,5 +1,6 @@
 "use client"
 import { useState, useRef, useEffect } from "react"
+import { usePromptAnalysis } from "@/hooks/usePromptAnalysis"
 
 export interface Analysis {
   start: number
@@ -16,43 +17,22 @@ interface EditorProps {
 
 export default function Editor({ onAnalysisSelect }: EditorProps) {
   const [content, setContent] = useState("")
-  const [analyses, setAnalyses] = useState<Analysis[]>([])
   const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const [cursorPosition, setCursorPosition] = useState<number | null>(null)
+  
+  // Replace mock analysis with real analysis
+  const { analyzePrompt, analyses, isAnalyzing, error } = usePromptAnalysis();
 
-  // Mock analysis logic - replace with actual AI analysis later
-  const analyzeText = (text: string) => {
-    const newAnalyses: Analysis[] = []
+  // Update the handleInput function to use the real analysis
+  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newContent = e.target.value
+    setContent(newContent)
+    analyzePrompt(newContent)
     
-    let betterIndex = text.indexOf("better")
-    while (betterIndex !== -1) {
-      newAnalyses.push({
-        start: betterIndex,
-        end: betterIndex + 6,
-        type: 'ambiguity',
-        text: "better",
-        suggestion: "Consider specifying what 'better' means in this context",
-        explanation: "The term 'better' is subjective and may be interpreted differently by the AI."
-      })
-      betterIndex = text.indexOf("better", betterIndex + 1)
-    }
-
-    let quicklyIndex = text.indexOf("quickly")
-    while (quicklyIndex !== -1) {
-      newAnalyses.push({
-        start: quicklyIndex,
-        end: quicklyIndex + 7,
-        type: 'assumption',
-        text: "quickly",
-        suggestion: "Define a specific time frame or metric",
-        explanation: "'Quickly' is relative and may not translate to the desired performance."
-      })
-      quicklyIndex = text.indexOf("quickly", quicklyIndex + 1)
-    }
-
-    setAnalyses(newAnalyses)
+    // Update cursor position
+    setCursorPosition(e.target.selectionStart)
   }
 
   // Synchronize scrolling between textarea and overlay
@@ -77,15 +57,6 @@ export default function Editor({ onAnalysisSelect }: EditorProps) {
     if (!textarea) return
     
     setCursorPosition(textarea.selectionStart)
-  }
-
-  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newContent = e.target.value
-    setContent(newContent)
-    analyzeText(newContent)
-    
-    // Update cursor position
-    setCursorPosition(e.target.selectionStart)
   }
 
   const handleAnalysisClick = (analysis: Analysis, e: React.MouseEvent) => {
