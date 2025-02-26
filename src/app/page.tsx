@@ -1,15 +1,27 @@
 "use client"
-import { ChevronDown, FileCode, FileText, List, MessageSquare, Plus, Settings, Sparkles, Zap } from "lucide-react"
-import Link from "next/link"
+import { ChevronDown, Settings } from "lucide-react"
+import { useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Editor, { Analysis } from "@/components/Editor"
-import { useState } from "react"
+import ApiKeyDialog from "@/components/ApiKeyDialog"
+import { useApiKey } from "@/hooks/useApiKey"
 
 export default function DashboardPage() {
   const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null)
+  const { apiKey, isLoading, saveApiKey, clearApiKey } = useApiKey()
+  const [showApiKeyDialog, setShowApiKeyDialog] = useState(false)
+
+  // Use useEffect to handle the API key check
+  useEffect(() => {
+    if (!apiKey && !isLoading) {
+      setShowApiKeyDialog(true)
+    }
+  }, [apiKey, isLoading])
+
+  if (isLoading) {
+    return null // Or show a loading spinner
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950">
@@ -21,6 +33,14 @@ export default function DashboardPage() {
             <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-400">v0</span>
           </div>
         </div>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="h-8 w-8"
+          onClick={() => setShowApiKeyDialog(true)}
+        >
+          <Settings className="h-4 w-4" />
+        </Button>
       </div>
 
       {/* Main Content */}
@@ -111,6 +131,16 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* API Key Dialog */}
+      {showApiKeyDialog && (
+        <ApiKeyDialog 
+          onSubmit={(newKey) => {
+            saveApiKey(newKey);
+            setShowApiKeyDialog(false);
+          }} 
+        />
+      )}
     </div>
   )
 }
