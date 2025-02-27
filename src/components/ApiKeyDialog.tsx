@@ -7,7 +7,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogClose
 } from "@/components/ui/dialog"
 
 interface ApiKeyDialogProps {
@@ -36,7 +35,7 @@ export default function ApiKeyDialog({ onSubmit, onClose }: ApiKeyDialogProps) {
     >
       <DialogContent 
         className="border border-zinc-800 bg-zinc-900 p-6 shadow-lg"
-        onEscapeKeyDown={(e) => {
+        onEscapeKeyDown={() => {
           if (onClose) {
             onClose()
           }

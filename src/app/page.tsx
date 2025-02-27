@@ -1,6 +1,6 @@
 "use client"
 import { ChevronDown, Settings } from "lucide-react"
-import { useEffect, useState, useRef } from "react"
+import { useState, useRef } from "react"
 
 import { Button } from "@/components/ui/button"
 import Editor, { Analysis, EditorRef } from "@/components/Editor"
@@ -94,7 +94,7 @@ export default function DashboardPage() {
                 }}
               >
                 <h3 className="mb-1 text-sm font-medium text-zinc-50">Knowledge Assumption</h3>
-                <p className="text-sm text-zinc-400">User-specific knowledge that is genuinely outside of the model's training data.</p>
+                <p className="text-sm text-zinc-400">User-specific knowledge that is genuinely outside of the model&apos;s training data.</p>
               </div>
               
               <div 
