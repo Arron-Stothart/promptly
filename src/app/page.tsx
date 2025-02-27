@@ -1,9 +1,9 @@
 "use client"
 import { ChevronDown, Settings } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 import { Button } from "@/components/ui/button"
-import Editor, { Analysis } from "@/components/Editor"
+import Editor, { Analysis, EditorRef } from "@/components/Editor"
 import ApiKeyDialog from "@/components/ApiKeyDialog"
 import { useApiKey } from "@/hooks/useApiKey"
 
@@ -11,16 +11,17 @@ export default function DashboardPage() {
   const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null)
   const { apiKey, isLoading, saveApiKey, clearApiKey } = useApiKey() // eslint-disable-line @typescript-eslint/no-unused-vars
   const [showApiKeyDialog, setShowApiKeyDialog] = useState(false)
-
-  // Use useEffect to handle the API key check
-  useEffect(() => {
-    if (!apiKey && !isLoading) {
-      setShowApiKeyDialog(true)
-    }
-  }, [apiKey, isLoading])
+  const editorRef = useRef<EditorRef>(null)
 
   if (isLoading) {
     return null // Or show a loading spinner
+  }
+
+  // Function to handle editor input attempts without API key
+  const handleEditorInputAttempt = () => {
+    if (!apiKey) {
+      setShowApiKeyDialog(true)
+    }
   }
 
   return (
@@ -56,7 +57,11 @@ export default function DashboardPage() {
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </div>
-            <Editor onAnalysisSelect={setSelectedAnalysis} />
+            <Editor 
+              ref={editorRef}
+              onAnalysisSelect={setSelectedAnalysis} 
+              onInputAttempt={handleEditorInputAttempt}
+            />
           </div>
 
           {/* Examples Section */}
@@ -64,19 +69,96 @@ export default function DashboardPage() {
             <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center gap-x-2">
                 <span className="text-xs font-medium text-zinc-400">EXAMPLES</span>
-                <span className="rounded bg-zinc-800 px-1.5 text-xs text-zinc-400">3</span>
+                <span className="rounded bg-zinc-800 px-1.5 text-xs text-zinc-400">4</span>
               </div>
               <Button variant="ghost" size="icon" className="h-6 w-6">
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </div>
             <div className="space-y-2">
-              {["Cnidaria", "Echinodermata", "Platyhelminthes"].map((item) => (
-                <div key={item} className="rounded-lg border border-zinc-800 bg-zinc-900 p-3">
-                  <h3 className="mb-1 text-sm font-medium text-zinc-50">{item}</h3>
-                  <p className="text-sm text-zinc-400">Example description for {item}...</p>
-                </div>
-              ))}
+              <div 
+                className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 cursor-pointer hover:bg-zinc-800 transition-colors"
+                onClick={() => {
+                  // Set editor content
+                  if (editorRef.current) {
+                    editorRef.current.setContent("Could this last sentence be improved: Engaged with the community through various channels and initiatives that resulted in positive outcomes for all stakeholders involved.");
+                    editorRef.current.setPreloadedAnalysis([{
+                      start: 28,
+                      end: 36,
+                      type: 'assumption',
+                      text: "improved",
+                      suggestion: "Specify what 'improved' means in this context. Are you looking for more concise wording, more specific details, or different phrasing?",
+                      explanation: "This assumption issue occurs because 'improved' is subjective and depends on what aspects of writing you're trying to enhance (clarity, brevity, impact, etc.)."
+                    }]);
+                  }
+                }}
+              >
+                <h3 className="mb-1 text-sm font-medium text-zinc-50">Knowledge Assumption</h3>
+                <p className="text-sm text-zinc-400">Could this last sentence be improved: Engaged with the community...</p>
+              </div>
+              
+              <div 
+                className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 cursor-pointer hover:bg-zinc-800 transition-colors"
+                onClick={() => {
+                  // Set editor content
+                  if (editorRef.current) {
+                    editorRef.current.setContent("Make the image better while keeping the same style.");
+                    editorRef.current.setPreloadedAnalysis([{
+                      start: 14,
+                      end: 21,
+                      type: 'ambiguity',
+                      text: "better",
+                      suggestion: "Specify what 'better' means by describing concrete improvements: 'Enhance the image contrast and sharpness while maintaining the current artistic style.'",
+                      explanation: "This ambiguity issue arises because 'better' can be interpreted in many ways (resolution, color balance, composition, etc.)."
+                    }]);
+                  }
+                }}
+              >
+                <h3 className="mb-1 text-sm font-medium text-zinc-50">Ambiguous Instruction</h3>
+                <p className="text-sm text-zinc-400">Make the image better while keeping the same style.</p>
+              </div>
+              
+              <div 
+                className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 cursor-pointer hover:bg-zinc-800 transition-colors"
+                onClick={() => {
+                  // Set editor content
+                  if (editorRef.current) {
+                    editorRef.current.setContent("Make the image more vibrant but also keep it muted and subtle.");
+                    editorRef.current.setPreloadedAnalysis([{
+                      start: 9,
+                      end: 61,
+                      type: 'technical',
+                      text: "image more vibrant but also keep it muted and subtle",
+                      suggestion: "Resolve the contradiction by specifying which parts should be vibrant and which should be muted: 'Make the foreground elements more vibrant while keeping the background muted and subtle.'",
+                      explanation: "This contains conflicting instructions because 'vibrant' and 'muted' are opposing visual qualities. The model cannot simultaneously make the entire image both vibrant and muted."
+                    }]);
+                  }
+                }}
+              >
+                <h3 className="mb-1 text-sm font-medium text-zinc-50">Conflicting Instructions</h3>
+                <p className="text-sm text-zinc-400">Make the image more vibrant but also keep it muted and subtle.</p>
+              </div>
+              
+              <div 
+                className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 cursor-pointer hover:bg-zinc-800 transition-colors"
+                onClick={() => {
+                  // Set editor content
+                  if (editorRef.current) {
+                    editorRef.current.setContent("Write me something about climate change.");
+                    editorRef.current.setPreloadedAnalysis([{
+                      start: 0,
+                      end: 39,
+                      type: 'drift',
+                      text: "Write me something about climate change.",
+                      suggestion: "Provide a specific task and scope: 'Write a 2-paragraph explanation of how rising sea levels affect coastal communities.'",
+                      explanation: "This drift issue occurs because the broad, open-ended request could lead the model to generate content that extends beyond what you actually need or want."
+                    }]);
+                  }
+                }}
+              >
+                <h3 className="mb-1 text-sm font-medium text-zinc-50">Response Drift</h3>
+                <p className="text-sm text-zinc-400">Write me something about climate change.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -134,13 +216,14 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* API Key Dialog */}
+      {/* API Key Dialog - Now closable */}
       {showApiKeyDialog && (
         <ApiKeyDialog 
           onSubmit={(newKey) => {
             saveApiKey(newKey);
             setShowApiKeyDialog(false);
-          }} 
+          }}
+          onClose={() => setShowApiKeyDialog(false)}
         />
       )}
     </div>

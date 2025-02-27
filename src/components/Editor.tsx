@@ -1,5 +1,5 @@
 "use client"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react"
 import { usePromptAnalysis } from "@/hooks/usePromptAnalysis"
 
 export interface Analysis {
@@ -11,11 +11,17 @@ export interface Analysis {
   explanation: string
 }
 
-interface EditorProps {
-  onAnalysisSelect?: (analysis: Analysis | null) => void
+export interface EditorRef {
+  setContent: (content: string) => void
+  setPreloadedAnalysis: (analyses: Analysis[]) => void
 }
 
-export default function Editor({ onAnalysisSelect }: EditorProps) {
+interface EditorProps {
+  onAnalysisSelect?: (analysis: Analysis | null) => void
+  onInputAttempt?: () => void
+}
+
+const Editor = forwardRef<EditorRef, EditorProps>(({ onAnalysisSelect, onInputAttempt }, ref) => {
   const [content, setContent] = useState("")
   const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -25,12 +31,43 @@ export default function Editor({ onAnalysisSelect }: EditorProps) {
   const visualFeedbackTimer = useRef<NodeJS.Timeout | null>(null)
   
   // Replace mock analysis with real analysis
-  const { analyzePrompt, analyses, isAnalyzing, error } = usePromptAnalysis();
+  const { analyzePrompt, analyses: apiAnalyses, isAnalyzing, error } = usePromptAnalysis();
+  
+  // Add state for preloaded analyses
+  const [preloadedAnalyses, setPreloadedAnalyses] = useState<Analysis[]>([]);
+  
+  // Combine API analyses with preloaded analyses
+  const analyses = preloadedAnalyses.length > 0 ? preloadedAnalyses : apiAnalyses;
+
+  // Expose methods via ref
+  useImperativeHandle(ref, () => ({
+    setContent: (newContent: string) => {
+      setContent(newContent);
+      // Clear preloaded analyses when setting content manually
+      setPreloadedAnalyses([]);
+      // Reset visual feedback state
+      setVisualFeedbackState('idle');
+      // Focus the textarea
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    },
+    setPreloadedAnalysis: (newAnalyses: Analysis[]) => {
+      setPreloadedAnalyses(newAnalyses);
+      setVisualFeedbackState('analyzed');
+    }
+  }));
 
   // Update the handleInput function to use the real analysis
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // Notify parent component about input attempt
+    onInputAttempt?.()
+    
     const newContent = e.target.value
     setContent(newContent)
+    
+    // Clear any preloaded analyses when user types
+    setPreloadedAnalyses([]);
     
     // Provide immediate visual feedback
     setVisualFeedbackState('typing')
@@ -237,4 +274,8 @@ export default function Editor({ onAnalysisSelect }: EditorProps) {
       )}
     </div>
   )
-}
+});
+
+Editor.displayName = "Editor";
+
+export default Editor;

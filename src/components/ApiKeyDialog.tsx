@@ -7,13 +7,15 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogClose
 } from "@/components/ui/dialog"
 
 interface ApiKeyDialogProps {
   onSubmit: (apiKey: string) => void
+  onClose?: () => void
 }
 
-export default function ApiKeyDialog({ onSubmit }: ApiKeyDialogProps) {
+export default function ApiKeyDialog({ onSubmit, onClose }: ApiKeyDialogProps) {
   const [apiKey, setApiKey] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -24,13 +26,24 @@ export default function ApiKeyDialog({ onSubmit }: ApiKeyDialogProps) {
   }
 
   return (
-    <Dialog open={true} onOpenChange={() => {}}>
+    <Dialog 
+      open={true} 
+      onOpenChange={(open) => {
+        if (!open && onClose) {
+          onClose()
+        }
+      }}
+    >
       <DialogContent 
         className="border border-zinc-800 bg-zinc-900 p-6 shadow-lg"
-        onEscapeKeyDown={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => {
+          if (onClose) {
+            onClose()
+          }
+        }}
         onInteractOutside={(e) => e.preventDefault()}
         onPointerDownOutside={(e) => e.preventDefault()}
-        closeButton={false}
+        closeButton={true}
       >
         <DialogHeader>
           <DialogTitle className="text-lg font-medium text-zinc-200">Enter Anthropic API Key</DialogTitle>
