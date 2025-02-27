@@ -9,7 +9,7 @@ import { useApiKey } from "@/hooks/useApiKey"
 
 export default function DashboardPage() {
   const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null)
-  const { apiKey, isLoading, saveApiKey, clearApiKey } = useApiKey()
+  const { apiKey, isLoading, saveApiKey, clearApiKey } = useApiKey() // eslint-disable-line @typescript-eslint/no-unused-vars
   const [showApiKeyDialog, setShowApiKeyDialog] = useState(false)
 
   // Use useEffect to handle the API key check

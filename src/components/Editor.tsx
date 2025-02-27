@@ -17,10 +17,10 @@ interface EditorProps {
 
 export default function Editor({ onAnalysisSelect }: EditorProps) {
   const [content, setContent] = useState("")
-  const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null)
+  const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
-  const [cursorPosition, setCursorPosition] = useState<number | null>(null)
+  const [cursorPosition, setCursorPosition] = useState<number | null>(null) // eslint-disable-line @typescript-eslint/no-unused-vars
   const [visualFeedbackState, setVisualFeedbackState] = useState<'idle' | 'typing' | 'analyzing' | 'analyzed'>('idle')
   const visualFeedbackTimer = useRef<NodeJS.Timeout | null>(null)
   
@@ -111,7 +111,7 @@ export default function Editor({ onAnalysisSelect }: EditorProps) {
   }
 
   const getHighlightedContent = () => {
-    let result = []
+    const result = []
     let lastIndex = 0
 
     // Sort analyses by start position

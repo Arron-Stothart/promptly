@@ -18,7 +18,7 @@ A Grammarly-style editor that analyzes prompts in real-time to improve communica
 * **Assumed Knowledge**: Text assuming model understands specific context (i.e. outside of SOTA knowledge) without explanation, leading to misinterpretation.
 * **Ambiguous Directions**: Instructions open to multiple valid interpretations, forcing guesswork on your intent.
 * **Contradictory Instructions**: Conflicting directives.
-* **Scope Creep**: Overly broad or unconstrained requests that can cause the model to extend beyond your intended focus.
+* **Task Drift**: Overly broad or unconstrained requests that can cause the model to extend beyond the primary task.
 
 ## To Explore...
 

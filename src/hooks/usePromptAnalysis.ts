@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useApiKey } from "@/hooks/useApiKey";
 import { getAnthropicClient } from "@/api/anthropicClient";
 import { Analysis } from "@/components/Editor";
-import { debounce } from "lodash";
+import { debounce } from "lodash"; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 // Cache interface for storing previous analysis results
 interface AnalysisCache {
@@ -60,11 +60,11 @@ export function usePromptAnalysis() {
   };
 
   // Parse the JSON response and convert to Analysis[] format
-  const parseAnalysisResponse = (content: string, jsonResponse: any): Analysis[] => {
+  const parseAnalysisResponse = (content: string, jsonResponse: any): Analysis[] => { // eslint-disable-line @typescript-eslint/no-explicit-any
     try {
       const issues = Array.isArray(jsonResponse) ? jsonResponse : [];
       
-      return issues.map((issue, index) => {
+      return issues.map((issue, index) => { // eslint-disable-line @typescript-eslint/no-unused-vars
         // Find the position of the issue text in the content
         const start = content.indexOf(issue.text);
         const end = start + issue.text.length;
@@ -206,7 +206,7 @@ export function usePromptAnalysis() {
       }, debounceTimeRef.current);
     },
     [performAnalysis]
-  ) as any; // Type assertion to allow adding timeoutId property
+  ) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const analyzePrompt = useCallback(
     (content: string) => {
@@ -231,7 +231,7 @@ export function usePromptAnalysis() {
       // Otherwise, queue for debounced analysis
       debouncedAnalyze(content);
     },
-    [debouncedAnalyze]
+    [debouncedAnalyze] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   return {

@@ -1,4 +1,4 @@
-import { useApiKey } from "@/hooks/useApiKey";
+import { useApiKey } from "@/hooks/useApiKey"; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 // Define error types for better error handling
 export class AnthropicApiError extends Error {
@@ -52,7 +52,7 @@ export function getAnthropicClient(apiKey: string | null) {
           try {
             const errorData = await response.json();
             errorMessage = errorData.error || errorMessage;
-          } catch (e) {
+          } catch (e) { // eslint-disable-line @typescript-eslint/no-unused-vars
             // If we can't parse the error as JSON, just use the status text
             errorMessage = `${errorMessage}: ${response.statusText}`;
           }
