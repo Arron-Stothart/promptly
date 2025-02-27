@@ -121,9 +121,11 @@ export default function DashboardPage() {
                   <p className="text-sm text-zinc-400">
                     Blue underlines indicate assumptions that might need clarification
                     <br />
-                    Yellow underlines indicate ambiguous terms
+                    Yellow underlines indicate instructions that could be interpreted in multiple ways
                     <br />
-                    Purple underlines indicate technical terms that might need explanation
+                    Red underlines are instructions that contradict each other
+                    <br />
+                    Purple underlines indicate sections that could lead the model to drift/extend beyond the primary task
                   </p>
                 </div>
               )}

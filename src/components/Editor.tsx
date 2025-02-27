@@ -5,7 +5,7 @@ import { usePromptAnalysis } from "@/hooks/usePromptAnalysis"
 export interface Analysis {
   start: number
   end: number
-  type: 'assumption' | 'ambiguity' | 'technical'
+  type: 'assumption' | 'ambiguity' | 'technical' | 'drift'
   text: string
   suggestion: string
   explanation: string

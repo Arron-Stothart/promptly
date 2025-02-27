@@ -38,8 +38,10 @@ export async function POST(request: NextRequest) {
             Respond with a JSON array where each object contains:
             
             1. "text": The specific text containing the potential misalignment
-            2. "category": One of [AMBIGUOUS_INSTRUCTION, UNDERSPECIFIED_PARAMETERS, CAPABILITY_ASSUMPTION, CONFLICTING_DIRECTIVES]
+            2. "category": One of [KNOWLEDGE_ASSUMPTION, AMBIGUOUS_INSTRUCTION, CONFLICTING_DIRECTIVE, RESPONSE_DRIFT]
             3. "suggestion": A single concrete rewrite suggestion
+            
+            RESPONSE_DRIFT refers to sections that that could lead the model to overextend beyond the primary task. This could be non-specific / weak instructions.
             
             Only include substantive issues that would affect even state-of-the-art models.
             

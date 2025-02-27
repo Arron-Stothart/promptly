@@ -28,7 +28,7 @@ export function usePromptAnalysis() {
   const MIN_CONTENT_LENGTH = 15;
 
   // Map API response categories to UI categories
-  const mapCategoryToType = (category: string): 'assumption' | 'ambiguity' | 'technical' => {
+  const mapCategoryToType = (category: string): 'assumption' | 'ambiguity' | 'technical' | 'drift' => {
     switch (category) {
       case 'CAPABILITY_ASSUMPTION':
         return 'assumption';
@@ -37,6 +37,8 @@ export function usePromptAnalysis() {
         return 'ambiguity';
       case 'UNDERSPECIFIED_PARAMETERS':
         return 'technical';
+      case 'RESPONSE_DRIFT':
+        return 'drift';
       default:
         return 'ambiguity';
     }
