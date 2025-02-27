@@ -44,7 +44,7 @@ Conflicting directives.
 * Use numbered lists for sequential tasks rather than paragraph form
 
 #### **Task Drift**
-Overly broad or unconstrained requests that can cause the model to extend beyond the primary task.
+Overly broad or unconstrained requests that can cause the model to extrapolate beyond the prompters intent for the task.
 * Provide Instructions for Edge Cases and Failure Modes
 * Structured Reasoning with Step-by-Step Instructions
 * Explicitly state boundaries of the task ("Focus only on X aspect")
