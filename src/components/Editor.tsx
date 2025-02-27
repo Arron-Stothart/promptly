@@ -9,6 +9,7 @@ export interface Analysis {
   text: string
   suggestion: string
   explanation: string
+  additionalHighlights?: { start: number; end: number; text: string }[]
 }
 
 export interface EditorRef {
@@ -55,6 +56,21 @@ const Editor = forwardRef<EditorRef, EditorProps>(({ onAnalysisSelect, onInputAt
     setPreloadedAnalysis: (newAnalyses: Analysis[]) => {
       setPreloadedAnalyses(newAnalyses);
       setVisualFeedbackState('analyzed');
+      
+      // Auto-select the first analysis if available
+      if (newAnalyses.length > 0) {
+        const firstAnalysis = newAnalyses[0];
+        setSelectedAnalysis(firstAnalysis);
+        onAnalysisSelect?.(firstAnalysis);
+        
+        // Set cursor position to the start of the highlighted text
+        setTimeout(() => {
+          if (textareaRef.current) {
+            textareaRef.current.focus();
+            textareaRef.current.setSelectionRange(firstAnalysis.start, firstAnalysis.end);
+          }
+        }, 0);
+      }
     }
   }));
 
@@ -151,36 +167,75 @@ const Editor = forwardRef<EditorRef, EditorProps>(({ onAnalysisSelect, onInputAt
     const result = []
     let lastIndex = 0
 
-    // Sort analyses by start position
-    const sortedAnalyses = [...analyses].sort((a, b) => a.start - b.start)
+    // Create a flat list of all highlights (primary + additional)
+    const allHighlights: { start: number; end: number; text: string; type: string; analysisIndex: number }[] = []
+    
+    analyses.forEach((analysis, index) => {
+      // Add the primary highlight
+      allHighlights.push({
+        start: analysis.start,
+        end: analysis.end,
+        text: analysis.text,
+        type: analysis.type,
+        analysisIndex: index
+      })
+      
+      // Add any additional highlights
+      if (analysis.additionalHighlights) {
+        analysis.additionalHighlights.forEach(highlight => {
+          allHighlights.push({
+            start: highlight.start,
+            end: highlight.end,
+            text: highlight.text,
+            type: analysis.type, // Use the same type as the parent analysis
+            analysisIndex: index // Reference to the parent analysis
+          })
+        })
+      }
+    })
 
-    for (const analysis of sortedAnalyses) {
+    // Sort all highlights by start position
+    allHighlights.sort((a, b) => a.start - b.start)
+
+    for (const highlight of allHighlights) {
       // Add text before the highlight
-      if (analysis.start > lastIndex) {
+      if (highlight.start > lastIndex) {
         result.push(
           <span key={`text-${lastIndex}`}>
-            {content.slice(lastIndex, analysis.start)}
+            {content.slice(lastIndex, highlight.start)}
           </span>
         )
       }
 
-      // Add highlighted text
+      // Check if this highlight belongs to the selected analysis
+      const isSelected = selectedAnalysis && 
+        (analyses[highlight.analysisIndex] === selectedAnalysis);
+
+      // Add highlighted text with appropriate styling
       result.push(
         <span
-          key={`highlight-${analysis.start}`}
+          key={`highlight-${highlight.start}-${highlight.end}`}
           className={`cursor-pointer border-b-2 ${
-            analysis.type === 'assumption' ? 'border-blue-500' :
-            analysis.type === 'ambiguity' ? 'border-yellow-500' :
+            highlight.type === 'assumption' ? 'border-blue-500' :
+            highlight.type === 'ambiguity' ? 'border-yellow-500' :
+            highlight.type === 'technical' ? 'border-red-500' :
             'border-purple-500'
+          } ${
+            isSelected ? `${
+              highlight.type === 'assumption' ? 'bg-blue-500/20' :
+              highlight.type === 'ambiguity' ? 'bg-yellow-500/20' :
+              highlight.type === 'technical' ? 'bg-red-500/20' :
+              'bg-purple-500/20'
+            }` : ''
           }`}
-          onClick={(e) => handleAnalysisClick(analysis, e)}
+          onClick={(e) => handleAnalysisClick(analyses[highlight.analysisIndex], e)}
           style={{ pointerEvents: 'auto' }}
         >
-          {content.slice(analysis.start, analysis.end)}
+          {content.slice(highlight.start, highlight.end)}
         </span>
       )
 
-      lastIndex = analysis.end
+      lastIndex = highlight.end
     }
 
     // Add remaining text
@@ -238,8 +293,8 @@ const Editor = forwardRef<EditorRef, EditorProps>(({ onAnalysisSelect, onInputAt
         onMouseUp={handleSelectionChange}
         onFocus={handleSelectionChange}
         placeholder="Start typing..."
-        className="w-full h-full resize-none bg-transparent font-mono text-sm text-transparent caret-zinc-200 p-3 whitespace-pre-wrap focus:outline-none"
-        rows={5}
+        className="w-full h-full resize-none bg-transparent font-mono text-sm text-transparent caret-zinc-200 p-3 whitespace-pre-wrap focus:outline-none selection:bg-transparent selection:text-transparent"
+        rows={10}
         style={{ 
           position: 'relative', 
           zIndex: 1,

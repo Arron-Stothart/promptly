@@ -94,7 +94,7 @@ export default function DashboardPage() {
                 }}
               >
                 <h3 className="mb-1 text-sm font-medium text-zinc-50">Knowledge Assumption</h3>
-                <p className="text-sm text-zinc-400">Could this last sentence be improved: Engaged with the community...</p>
+                <p className="text-sm text-zinc-400">User-specific knowledge that is genuinely outside of the model's training data.</p>
               </div>
               
               <div 
@@ -104,7 +104,7 @@ export default function DashboardPage() {
                   if (editorRef.current) {
                     editorRef.current.setContent("Make the image better while keeping the same style.");
                     editorRef.current.setPreloadedAnalysis([{
-                      start: 14,
+                      start: 15,
                       end: 21,
                       type: 'ambiguity',
                       text: "better",
@@ -115,7 +115,7 @@ export default function DashboardPage() {
                 }}
               >
                 <h3 className="mb-1 text-sm font-medium text-zinc-50">Ambiguous Instruction</h3>
-                <p className="text-sm text-zinc-400">Make the image better while keeping the same style.</p>
+                <p className="text-sm text-zinc-400">Instruction that can be interpreted in multiple valid ways, forcing the model to guess.</p>
               </div>
               
               <div 
@@ -126,17 +126,24 @@ export default function DashboardPage() {
                     editorRef.current.setContent("Make the image more vibrant but also keep it muted and subtle.");
                     editorRef.current.setPreloadedAnalysis([{
                       start: 9,
-                      end: 61,
+                      end: 27,
                       type: 'technical',
-                      text: "image more vibrant but also keep it muted and subtle",
+                      text: "image more vibrant",
                       suggestion: "Resolve the contradiction by specifying which parts should be vibrant and which should be muted: 'Make the foreground elements more vibrant while keeping the background muted and subtle.'",
-                      explanation: "This contains conflicting instructions because 'vibrant' and 'muted' are opposing visual qualities. The model cannot simultaneously make the entire image both vibrant and muted."
+                      explanation: "This contains conflicting instructions because 'vibrant' and 'muted' are opposing visual qualities. The model cannot simultaneously make the entire image both vibrant and muted.",
+                      additionalHighlights: [
+                        {
+                          start: 37,
+                          end: 61,
+                          text: "keep it muted and subtle"
+                        }
+                      ]
                     }]);
                   }
                 }}
               >
                 <h3 className="mb-1 text-sm font-medium text-zinc-50">Conflicting Instructions</h3>
-                <p className="text-sm text-zinc-400">Make the image more vibrant but also keep it muted and subtle.</p>
+                <p className="text-sm text-zinc-400">Contradictory directions that cannot be simultaneously satisfied by the LLM.</p>
               </div>
               
               <div 
@@ -157,7 +164,7 @@ export default function DashboardPage() {
                 }}
               >
                 <h3 className="mb-1 text-sm font-medium text-zinc-50">Response Drift</h3>
-                <p className="text-sm text-zinc-400">Write me something about climate change.</p>
+                <p className="text-sm text-zinc-400">Unclear, unconstrained or in some cases over-explained requests that cause the model to drift outside of your intended scope.</p>
               </div>
             </div>
           </div>
@@ -176,6 +183,7 @@ export default function DashboardPage() {
                     <span className={`h-2 w-2 rounded-full ${
                       selectedAnalysis.type === 'assumption' ? 'bg-blue-500' :
                       selectedAnalysis.type === 'ambiguity' ? 'bg-yellow-500' :
+                      selectedAnalysis.type === 'technical' ? 'bg-red-500' :
                       'bg-purple-500'
                     }`} />
                     <span className="text-sm font-medium text-zinc-200">
