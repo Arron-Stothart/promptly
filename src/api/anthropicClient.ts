@@ -1,5 +1,23 @@
 import { useApiKey } from "@/hooks/useApiKey";
 
+// Define error types for better error handling
+export class AnthropicApiError extends Error {
+  status: number;
+  
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'AnthropicApiError';
+    this.status = status;
+  }
+}
+
+export class NetworkError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'NetworkError';
+  }
+}
+
 export function getAnthropicClient(apiKey: string | null) {
   if (!apiKey) {
     throw new Error("API key is required");
@@ -8,46 +26,75 @@ export function getAnthropicClient(apiKey: string | null) {
   return {
     analyzePrompt: async (content: string) => {
       try {
-        const response = await fetch("https://api.anthropic.com/v1/messages", {
+        // Add timeout to prevent hanging requests
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+        
+        // Use our own API route instead of calling Anthropic directly
+        const response = await fetch("/api/analyze", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-api-key": apiKey,
-            "anthropic-version": "2023-06-01"
           },
           body: JSON.stringify({
-            model: "claude-3-5-haiku-20240307",
-            max_tokens: 1024,
-            temperature: 0.2,
-            system: "You analyze prompts for potential misalignments between human intent and LLM interpretation.",
-            messages: [
-              {
-                role: "user",
-                content: `
-                  Analyze this prompt segment for potential misalignments between human intent and LLM interpretation. 
-                  Respond with a JSON array where each object contains:
-                  
-                  1. "text": The specific text containing the potential misalignment
-                  2. "category": One of [AMBIGUOUS_INSTRUCTION, UNDERSPECIFIED_PARAMETERS, CAPABILITY_ASSUMPTION, CONFLICTING_DIRECTIVES]
-                  3. "suggestion": A single concrete rewrite suggestion
-                  
-                  Only include substantive issues that would affect even state-of-the-art models.
-                  
-                  Prompt segment to analyze: ${content}
-                `
-              }
-            ]
-          })
+            content,
+            apiKey
+          }),
+          signal: controller.signal
         });
         
+        // Clear the timeout
+        clearTimeout(timeoutId);
+        
         if (!response.ok) {
-          throw new Error(`API request failed: ${response.status}`);
+          let errorMessage = "API request failed";
+          
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorMessage;
+          } catch (e) {
+            // If we can't parse the error as JSON, just use the status text
+            errorMessage = `${errorMessage}: ${response.statusText}`;
+          }
+          
+          // Handle different error status codes
+          if (response.status === 429) {
+            throw new AnthropicApiError("Rate limit exceeded. Please try again later.", response.status);
+          } else if (response.status === 401) {
+            throw new AnthropicApiError("Invalid API key. Please check your API key and try again.", response.status);
+          } else {
+            throw new AnthropicApiError(errorMessage, response.status);
+          }
         }
         
         const data = await response.json();
-        return data.content[0].text; // Assuming this is where the JSON response is
+        
+        // Our API route returns { result: [...] }
+        if (!data || data.result === undefined) {
+          throw new Error("Invalid response format from API");
+        }
+        
+        // Return the result as a JSON string
+        return JSON.stringify(data.result);
       } catch (error) {
         console.error("Error analyzing prompt:", error);
+        
+        // Handle abort error (timeout)
+        if (error instanceof Error && error.name === 'AbortError') {
+          throw new NetworkError("Request timed out. Please try again.");
+        }
+        
+        // Re-throw API errors
+        if (error instanceof AnthropicApiError) {
+          throw error;
+        }
+        
+        // Handle network errors
+        if (error instanceof Error && error.message.includes('fetch')) {
+          throw new NetworkError("Network error. Please check your internet connection.");
+        }
+        
+        // Handle other errors
         throw error;
       }
     }

@@ -21,6 +21,8 @@ export default function Editor({ onAnalysisSelect }: EditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const [cursorPosition, setCursorPosition] = useState<number | null>(null)
+  const [visualFeedbackState, setVisualFeedbackState] = useState<'idle' | 'typing' | 'analyzing' | 'analyzed'>('idle')
+  const visualFeedbackTimer = useRef<NodeJS.Timeout | null>(null)
   
   // Replace mock analysis with real analysis
   const { analyzePrompt, analyses, isAnalyzing, error } = usePromptAnalysis();
@@ -29,11 +31,46 @@ export default function Editor({ onAnalysisSelect }: EditorProps) {
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value
     setContent(newContent)
+    
+    // Provide immediate visual feedback
+    setVisualFeedbackState('typing')
+    
+    // Clear any existing timer
+    if (visualFeedbackTimer.current) {
+      clearTimeout(visualFeedbackTimer.current)
+    }
+    
+    // Set a timer to show "analyzing" state after a short delay
+    // This prevents flickering for very quick analyses or cached results
+    visualFeedbackTimer.current = setTimeout(() => {
+      if (newContent.trim().length >= 15) {
+        setVisualFeedbackState('analyzing')
+      }
+    }, 300)
+    
+    // Trigger the actual analysis
     analyzePrompt(newContent)
     
     // Update cursor position
     setCursorPosition(e.target.selectionStart)
   }
+
+  // Update visual feedback state based on analysis status
+  useEffect(() => {
+    if (isAnalyzing) {
+      setVisualFeedbackState('analyzing')
+    } else if (analyses.length > 0) {
+      setVisualFeedbackState('analyzed')
+    } else if (content.trim().length < 15) {
+      setVisualFeedbackState('idle')
+    }
+    
+    // Clear any pending visual feedback timer
+    if (visualFeedbackTimer.current) {
+      clearTimeout(visualFeedbackTimer.current)
+      visualFeedbackTimer.current = null
+    }
+  }, [isAnalyzing, analyses, content])
 
   // Synchronize scrolling between textarea and overlay
   useEffect(() => {
@@ -121,6 +158,38 @@ export default function Editor({ onAnalysisSelect }: EditorProps) {
     return result
   }
 
+  // Get visual feedback indicator based on current state
+  const getVisualFeedbackIndicator = () => {
+    switch (visualFeedbackState) {
+      case 'idle':
+        return null;
+      case 'typing':
+        return (
+          <div className="absolute bottom-2 right-2 text-xs text-zinc-400">
+            Type more to analyze...
+          </div>
+        );
+      case 'analyzing':
+        return (
+          <div className="absolute bottom-2 right-2 text-xs text-zinc-400 flex items-center">
+            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-zinc-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Analyzing prompt...
+          </div>
+        );
+      case 'analyzed':
+        return (
+          <div className="absolute bottom-2 right-2 text-xs text-green-400">
+            Analysis complete
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="relative rounded-lg border border-zinc-800 bg-zinc-900">
       <textarea
@@ -156,6 +225,16 @@ export default function Editor({ onAnalysisSelect }: EditorProps) {
       >
         {getHighlightedContent()}
       </div>
+      
+      {/* Visual feedback indicator */}
+      {getVisualFeedbackIndicator()}
+      
+      {/* Error message if analysis fails */}
+      {error && (
+        <div className="absolute bottom-2 left-2 text-xs text-red-400">
+          {error}
+        </div>
+      )}
     </div>
   )
 }
