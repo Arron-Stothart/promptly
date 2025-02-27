@@ -1,0 +1,66 @@
+Claude 3.7 is worse than 3.5 in Cursor RN
+Unpopular opinion It's way too eager, constantly trying to do stuff in the code even when you don't ask it to. It straight-up ignores serious linter errors and always over-engineers everything. It also ignores rules - like if you say DRY, KISS, and YAGNI, it still keeps overthinking. It hyper-focuses on some problem, overanalyzes it, and immediately
+tries to "fix" it. And that sucks. Spent the whole day with 3.7 yesterday, and by the evening, I was back to 3.5. Right
+now, controlling 3.7 is just impossible.
+What do you think, guys? Am I missing something?
+
+They are both working differently. 
+
+To develop new features it’s great. You can ask pretty high level stuff and it will decompose it into smaller tasks + anticipate your needs which is truly impressive 
+
+To fix bugs however… I prefer 3.5, more straight to the point
+
+3.7 needs to be promoted differently. It’s opinionated and less is more in prompt length. Could be good or bad
+
+It seems more capable but harder to control. Like it goes on and does things I didn’t ask for/don’t want
+
+it’s better at one-shotting
+but overthinks a lot
+
+3.7 (thinking) is an overthinker and sometimes it thinks it’s smarter than it is
+
+3.7 seems to constantly go overboard when I ask for simple tasks.
+
+- clearly better for coding
+- better with large context
+- better at following instructions (vibe checked)
+
+I don't always love the new tone. Feels like it struggles a bit more than 3.5 at driving some convos forward
+
+Depends on what I am working on. Sonnet 3.7 seems more like a coworker than a tool.
+
+It has a unique spatial understanding I have not seen before as well.
+
+Its not hate, there are some problems with 3.7 that need to be ironed out.
+
+It has an EOF problem where it tries to generate code but gets cut off, then when you ask it to continue it just repeats the error, it is possible to get around this issue with prompting but you have to know what you are doing,
+
+It also tries to do much more than what you tell it do(why some people love it) but it is a pain for those with existing code and want focused edits.
+
+It burns through tokens in thinking mode and normal mode which is a bit of a pain if you using the API.
+
+Holy crap, what a disaster. Worse than 3.5 by a mile. It starts puking out random functions outta nowhere, tweaking code I didn’t ask it to touch, ignoring every principle and instruction I’d set. It even took my solid code and made it buggy—like, thanks for the downgrade, bud. Generation times dragged, and I’d spend more time fixing its garbage than writing from scratch. At one point, it spat out Next.js 13 code that doesn’t even work anymore—what the hell? Total fail. I said screw it and rolled back to 3.5.
+
+I agree with you but I have only used it in Cursor and I’ve reverted back to using 3.5 after a few hours of using of 3.7.
+
+Similar experience with 3.7 Agent just running off and creating new files, taking longer, and actually making me less productive.
+
+Back to reliable 3.5!
+
+So please don't dismiss this with 'skill issue' or anything like that. While I am not an elite programmer/prompt engineer, I have spent an inordinate amount of time up-skilling myself over the last two years, and would have been more than happy with even a modest ~7-10% increase in 3.7's ability vs. 3.5(new).
+
+3.7 feels like a senior McKinsey consultant-presenting model that's mastered the art of lying to your face about how good they are and how capable they are at solving your problems. Granted, 3.5(new) also had some of those tendencies, but I feel like it was a lot easier to get it to be... humble and cognizant of its limitations. It wasn't as confident; wasn't as plagued by off-putting hubris.
+
+I plugged 3.7 right where I left off with 3.5(new) literally minutes after it was released on Monday on multiple projects, and it absolutely bombed. Ignored instructions, introduced unnecessary complexity, and very quickly lost the thread. I kept telling myself in disbelief that surely, it's something I'm doing. I'd start new chats, switch solutions (Claude Code <—> Cursor <—> etc.), but kept running into the same problems.
+
+My theory is that it's superior to 3.5(new) in one-shotting tasks (hence the hype), but degrades in performance as complexity increases. Fast. I simply don't have another explanation.
+
+The other thing I hate about it is that it's got no personality. With 3.5(new), I'd regularly crack jokes, we'd roast each other, engage in interesting philosophical conversations, etc., as a very pleasant reprieve from the high-focus coding we were doing. It was like having a pair-programmer who's also a great conversationalist; who's got some... life, spunk.
+
+3.7 feels like it does not want to engage in anything other than work. It's like the new employee who retains a deadpan expression even as you try to build rapport and coax any degree of humanity from them.
+
+Today, I said enough is enough, went back to 3.5(new), and made more progress in an hour than in the last couple of days. Seriously.
+
+I am not an Anthropic fanboy. I bear no allegiance to any of these companies. I will stay with 3.5(new), but the second a better model comes out for coding, I will switch to it immediately.
+
+Does it have these problems outside of cursor? Im having a lot of issues with it "over-coding" and doing things i didnt ask but not sure if its the model or cursor

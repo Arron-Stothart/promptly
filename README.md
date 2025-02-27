@@ -53,6 +53,50 @@ Overly broad or unconstrained requests that can cause the model to extrapolate b
 * Specify what NOT to include in the response
 * Create a clear scope statement at the beginning of your prompt
 
+## X.com Sentiment Analysis
+
+#### Be Explicitly Directive
+
+Since Claude 3.7 appears to be more proactive and "eager," clearly state:
+- Exactly what you want done (and nothing more)
+- What parts of code should remain untouched
+- When you want suggestions versus actual implementation
+
+Example: "Review this function for bugs but do not modify its structure or add new features. Only fix syntax errors."
+
+#### Set Clear Boundaries
+
+- Use explicit instructions like "Do not introduce new functions unless requested"
+- Consider saying "Wait for my confirmation before implementing changes"
+- When appropriate, specify "This is a minimal implementation request - prioritize simplicity over completeness"
+
+#### Control Complexity
+
+Several comments mention over-engineering and overthinking:
+- Request "KISS (Keep It Simple, Stupid) solutions only"
+- Explicitly ask for the minimum viable solution
+- When appropriate, say "Focus only on the specific issue described, not on potential edge cases"
+
+#### Use Structured Prompts
+
+- Break complex requests into numbered steps
+- For code modifications, specify the exact file and line numbers to change
+- Use clear demarcation like "ONLY respond to what's between these markers"
+
+#### Choose the Right Mode
+
+Based on the feedback:
+- Use 3.7 for: creative tasks, exploratory work, or generating new features
+- Consider 3.5 for: bug fixes, targeted edits, or when you need more control
+
+#### Iterative Guidance
+
+- Start with small, specific requests and build up
+- Provide feedback like "That's too complex, please simplify" or "You're on the right track but focus only on X"
+- Don't hesitate to say "Let's take a step back" when the model goes too far
+
+The document suggests Claude 3.7 works well as a collaborative partner but might require more explicit guardrails and direction compared to 3.5. Tailoring your prompting style to be more precise will likely yield better results.
+
 ## To Explore...
 
 #### Interactive Prompt Analysis System
