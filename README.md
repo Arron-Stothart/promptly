@@ -11,7 +11,14 @@ A Grammarly-style editor that analyzes prompts in real-time to improve communica
 ![image](https://github.com/user-attachments/assets/f744c994-3e13-4a33-b7ea-c58d418fee40)
 ![image](https://github.com/user-attachments/assets/739bfb52-585f-4b89-b31d-2d2f923059c4)
 
+## Prompt Engineering Research
 
+#### Misalignments types (wip):
+
+* **Assumed Knowledge**: Text assuming model understands specific context (i.e. outside of SOTA knowledge) without explanation, leading to misinterpretation.
+* **Ambiguous Directions**: Instructions open to multiple valid interpretations, forcing guesswork on your intent.
+* **Contradictory Instructions**: Conflicting directives.
+* **Scope Creep**: Overly broad or unconstrained requests that can cause the model to extend beyond your intended focus.
 
 ## To Explore...
 
