@@ -115,7 +115,7 @@ export default function DashboardPage() {
                 }}
               >
                 <h3 className="mb-1 text-sm font-medium text-zinc-50">Ambiguous Instruction</h3>
-                <p className="text-sm text-zinc-400">Instruction that can be interpreted in multiple valid ways, forcing the model to guess.</p>
+                <p className="text-sm text-zinc-400">Instruction missing specific details that can be interpreted in multiple valid ways, forcing the model to guess.</p>
               </div>
               
               <div 

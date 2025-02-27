@@ -13,12 +13,45 @@ A Grammarly-style editor that analyzes prompts in real-time to improve communica
 
 ## Prompt Engineering Research
 
-#### Misalignments types (wip):
+### Misalignments types (wip):
 
-* **Assumed Knowledge**: Text assuming model understands specific context (i.e. outside of SOTA knowledge) without explanation, leading to misinterpretation.
-* **Ambiguous Directions**: Instructions open to multiple valid interpretations, forcing guesswork on your intent.
-* **Contradictory Instructions**: Conflicting directives.
-* **Task Drift**: Overly broad or unconstrained requests that can cause the model to extend beyond the primary task.
+#### **Assumed Knowledge**
+Text assuming model understands specific context (i.e. outside of SOTA knowledge) without explanation, leading to misinterpretation.
+* Define New Concepts Clearly (The Philosophy Approach)
+* Let the Model Interview You to Extract Information
+* Provide Context About Yourself for More Relevant Help
+* Explicitly state domain-specific terminology and acronyms
+* Include relevant background information before presenting the specific request
+* Ask the model to acknowledge knowledge gaps rather than speculate
+
+#### **Ambiguous Directions**
+Instructions open to multiple valid interpretations, forcing guesswork on your intent.
+* Use Illustrative Examples Without Being Restrictive
+* Be Clear and Detailed (The Temp Agency Worker Approach)
+* Be Honest About Your Task Instead of Using Misleading Metaphors
+* Specify the exact format for the response
+* Provide evaluation criteria for what makes a good response
+* Ask the model to acknowledge ambiguities it detects in your instructions
+
+
+#### **Contradictory Instructions**
+Conflicting directives.
+* Prioritize instructions explicitly ("First do X, then if possible do Y")
+* Ask the Model to Help Improve Your Prompt before execution
+* Structure your request with clear hierarchies of importance
+* Provide decision rules for handling conflicts ("When X and Y conflict, prioritize X")
+* Review your prompt for logical consistency before submission
+* Use numbered lists for sequential tasks rather than paragraph form
+
+#### **Task Drift**
+Overly broad or unconstrained requests that can cause the model to extend beyond the primary task.
+* Provide Instructions for Edge Cases and Failure Modes
+* Structured Reasoning with Step-by-Step Instructions
+* Explicitly state boundaries of the task ("Focus only on X aspect")
+* Include stopping criteria ("Analyze only these 3 factors")
+* Break complex tasks into smaller, well-defined subtasks
+* Specify what NOT to include in the response
+* Create a clear scope statement at the beginning of your prompt
 
 ## To Explore...
 
