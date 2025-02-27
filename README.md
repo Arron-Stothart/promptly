@@ -4,7 +4,7 @@ This repository contains explorations and implementations for a platform designe
 
 ## Overview
 
-A Grammarly-style editor that analyzes prompts in real-time to improve communication with AI models. Promptly identifies potential misalignments between human intent and LLM interpretation, highlighting ambiguous instructions, underspecified parameters, capability assumptions, and conflicting directives. The tool provides suggested rewrites to help users craft clearer, more effective prompts that get the results they want from state-of-the-art AI systems.
+A Grammarly-style editor that analyzes prompts in real-time to improve communication with AI models. Promptly identifies potential misalignments between human intent and LLM interpretation, highlighting ambiguous instructions, underspecified parameters, capability assumptions, conflicting directives, and potential response drift (overextension from the primary task). The tool provides suggested rewrites to help users craft clearer, more effective prompts that get the results they want from state-of-the-art models.
 
 ## UI/UX
 ![image](https://github.com/user-attachments/assets/d2b78ab0-1d89-4e39-a5b3-e11d576b8ad1)
