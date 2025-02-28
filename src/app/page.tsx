@@ -30,8 +30,8 @@ export default function DashboardPage() {
       <div className="flex h-12 items-center justify-between border-b border-zinc-800 px-4">
         <div className="flex items-center gap-x-2">
           <div className="flex items-center gap-x-2">
-            <span className="text-sm font-medium text-zinc-50">Clarion</span>
-            <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-400">v0</span>
+            <span className="text-sm font-medium text-zinc-50">Resonnet</span>
+            <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-400">v3.7</span>
           </div>
         </div>
         <Button 

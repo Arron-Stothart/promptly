@@ -64,3 +64,11 @@ Today, I said enough is enough, went back to 3.5(new), and made more progress in
 I am not an Anthropic fanboy. I bear no allegiance to any of these companies. I will stay with 3.5(new), but the second a better model comes out for coding, I will switch to it immediately.
 
 Does it have these problems outside of cursor? Im having a lot of issues with it "over-coding" and doing things i didnt ask but not sure if its the model or cursor
+
+Say what you will but sonnet 3.7 is an overcomplicated midwit that needs to be slapped in the face in order to be useful
+
+Claude 3.7 Sonnet is significantly worse than 3.5 at following instructions, either we need to prompt it completely differently or they need to do some significant tweaks
+
+It completely ignores what I tell it to not do/how I want it to respond
+
+Claude Sonnet 3.7 is an overzealous, prompt ignoring, hallucination machine. But its design skills are unmatched. It spits out some beautiful layouts and designs, as if it was trained on only top-tier landing pages. Our new relationship is "GO SIT IN THE CORNER UNTIL I NEED YOU!"
