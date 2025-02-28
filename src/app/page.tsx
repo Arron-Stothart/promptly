@@ -1,5 +1,4 @@
 "use client"
-import { ArrowRight } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
 
@@ -59,11 +58,11 @@ export default function InfoPage() {
       {/* Long Text Explanation Section */}
       <div className="mx-auto max-w-3xl p-6 my-12">
         <div className="prose prose-invert max-w-none">
-          <h3>
-            Some issue I've encountered with Claude 3.7 Sonnet as of 28/02/2025:
-          </h3>
-          <ul className="list-disc pl-6 py-2">
-            <li>Overcomplicates Tasks, particularly in Cursor Agent, triggering unnecessary file searches and exploration</li>
+            <h3>
+              Some issues I&apos;ve encountered with Claude 3.7 Sonnet as of 28/02/2025:
+            </h3>
+            <ul className="list-disc pl-6 py-2">
+              <li>Overcomplicates Tasks, particularly in Cursor Agent, triggering unnecessary file searches and exploration</li>
             <li>Performs worse than Claude 3.5 at following instructions</li>
             <li>Is proactive to a fault, often ignores prompt constraints in favor of perceived helpfulness</li>
           </ul>
