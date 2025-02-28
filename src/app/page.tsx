@@ -1,27 +1,18 @@
 "use client"
-import { ChevronDown, Settings } from "lucide-react"
-import { useState, useRef } from "react"
+import { ArrowRight } from "lucide-react"
+import { useState } from "react"
+import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
-import Editor, { Analysis, EditorRef } from "@/components/Editor"
 import ApiKeyDialog from "@/components/ApiKeyDialog"
 import { useApiKey } from "@/hooks/useApiKey"
 
-export default function DashboardPage() {
-  const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null)
-  const { apiKey, isLoading, saveApiKey, clearApiKey } = useApiKey() // eslint-disable-line @typescript-eslint/no-unused-vars
+export default function InfoPage() {
+  const { apiKey, isLoading, saveApiKey } = useApiKey()
   const [showApiKeyDialog, setShowApiKeyDialog] = useState(false)
-  const editorRef = useRef<EditorRef>(null)
 
   if (isLoading) {
     return null // Or show a loading spinner
-  }
-
-  // Function to handle editor input attempts without API key
-  const handleEditorInputAttempt = () => {
-    if (!apiKey) {
-      setShowApiKeyDialog(true)
-    }
   }
 
   return (
@@ -34,197 +25,141 @@ export default function DashboardPage() {
             <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-400">v3.7</span>
           </div>
         </div>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="h-8 w-8"
-          onClick={() => setShowApiKeyDialog(true)}
-        >
-          <Settings className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-x-4">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => setShowApiKeyDialog(true)}
+          >
+            {apiKey ? "API Key Set" : "Set API Key"}
+          </Button>
+          <Link href="/app">
+            <Button variant="outline" size="sm">
+              Go to App
+            </Button>
+          </Link>
+        </div>
       </div>
 
-      {/* Main Content */}
-      <div className="grid flex-1 grid-cols-2 divide-x divide-zinc-800">
-        <div className="flex flex-col divide-y divide-zinc-800">
-          {/* Inline Prompt Editor Section */}
-          <div className="p-4">
-            <div className="mb-2 flex items-center justify-between">
-              <div className="flex items-center gap-x-2">
-                <span className="text-xs font-medium text-zinc-400">PROMPT EDITOR</span>
-              </div>
-              <Button variant="ghost" size="icon" className="h-6 w-6">
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </div>
-            <Editor 
-              ref={editorRef}
-              onAnalysisSelect={setSelectedAnalysis} 
-              onInputAttempt={handleEditorInputAttempt}
-            />
-          </div>
+      {/* Hero Section */}
+      <div className="flex flex-col items-center justify-center px-4 py-16 text-center md:py-24">
+        <h1 className="mb-4 text-4xl font-bold tracking-tight text-zinc-50 md:text-5xl">
+          Craft Better AI Prompts with <span className="text-blue-500">Resonnet</span>
+        </h1>
+        <p className="mb-8 max-w-2xl text-lg text-zinc-400">
+          An intelligent prompt analysis tool that helps you identify and fix common issues in your AI prompts for better results.
+        </p>
+        <Link href="/app">
+          <Button size="lg" className="gap-2">
+            Try Resonnet Now <ArrowRight className="h-4 w-4" />
+          </Button>
+        </Link>
+      </div>
 
-          {/* Examples Section */}
-          <div className="p-4">
-            <div className="mb-2 flex items-center justify-between">
-              <div className="flex items-center gap-x-2">
-                <span className="text-xs font-medium text-zinc-400">EXAMPLES</span>
-                <span className="rounded bg-zinc-800 px-1.5 text-xs text-zinc-400">4</span>
-              </div>
-              <Button variant="ghost" size="icon" className="h-6 w-6">
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="space-y-2">
-              <div 
-                className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 cursor-pointer hover:bg-zinc-800 transition-colors"
-                onClick={() => {
-                  // Set editor content
-                  if (editorRef.current) {
-                    editorRef.current.setContent("Could this last sentence be improved: Engaged with the community through various channels and initiatives that resulted in positive outcomes for all stakeholders involved.");
-                    editorRef.current.setPreloadedAnalysis([{
-                      start: 28,
-                      end: 36,
-                      type: 'assumption',
-                      text: "improved",
-                      suggestion: "Specify what 'improved' means in this context. Are you looking for more concise wording, more specific details, or different phrasing?",
-                      explanation: "This assumption issue occurs because 'improved' is subjective and depends on what aspects of writing you're trying to enhance (clarity, brevity, impact, etc.)."
-                    }]);
-                  }
-                }}
-              >
-                <h3 className="mb-1 text-sm font-medium text-zinc-50">Knowledge Assumption</h3>
-                <p className="text-sm text-zinc-400">User-specific knowledge that is genuinely outside of the model&apos;s training data.</p>
-              </div>
-              
-              <div 
-                className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 cursor-pointer hover:bg-zinc-800 transition-colors"
-                onClick={() => {
-                  // Set editor content
-                  if (editorRef.current) {
-                    editorRef.current.setContent("Make the image better while keeping the same style.");
-                    editorRef.current.setPreloadedAnalysis([{
-                      start: 15,
-                      end: 21,
-                      type: 'ambiguity',
-                      text: "better",
-                      suggestion: "Specify what 'better' means by describing concrete improvements: 'Enhance the image contrast and sharpness while maintaining the current artistic style.'",
-                      explanation: "This ambiguity issue arises because 'better' can be interpreted in many ways (resolution, color balance, composition, etc.)."
-                    }]);
-                  }
-                }}
-              >
-                <h3 className="mb-1 text-sm font-medium text-zinc-50">Ambiguous Instruction</h3>
-                <p className="text-sm text-zinc-400">Instruction missing specific details that can be interpreted in multiple valid ways, forcing the model to guess.</p>
-              </div>
-              
-              <div 
-                className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 cursor-pointer hover:bg-zinc-800 transition-colors"
-                onClick={() => {
-                  // Set editor content
-                  if (editorRef.current) {
-                    editorRef.current.setContent("Make the image more vibrant but also keep it muted and subtle.");
-                    editorRef.current.setPreloadedAnalysis([{
-                      start: 9,
-                      end: 27,
-                      type: 'technical',
-                      text: "image more vibrant",
-                      suggestion: "Resolve the contradiction by specifying which parts should be vibrant and which should be muted: 'Make the foreground elements more vibrant while keeping the background muted and subtle.'",
-                      explanation: "This contains conflicting instructions because 'vibrant' and 'muted' are opposing visual qualities. The model cannot simultaneously make the entire image both vibrant and muted.",
-                      additionalHighlights: [
-                        {
-                          start: 37,
-                          end: 61,
-                          text: "keep it muted and subtle"
-                        }
-                      ]
-                    }]);
-                  }
-                }}
-              >
-                <h3 className="mb-1 text-sm font-medium text-zinc-50">Conflicting Instructions</h3>
-                <p className="text-sm text-zinc-400">Contradictory directions that cannot be simultaneously satisfied by the LLM.</p>
-              </div>
-              
-              <div 
-                className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 cursor-pointer hover:bg-zinc-800 transition-colors"
-                onClick={() => {
-                  // Set editor content
-                  if (editorRef.current) {
-                    editorRef.current.setContent("Write me something about climate change.");
-                    editorRef.current.setPreloadedAnalysis([{
-                      start: 0,
-                      end: 39,
-                      type: 'drift',
-                      text: "Write me something about climate change.",
-                      suggestion: "Provide a specific task and scope: 'Write a 2-paragraph explanation of how rising sea levels affect coastal communities.'",
-                      explanation: "This drift issue occurs because the broad, open-ended request could lead the model to generate content that extends beyond what you actually need or want."
-                    }]);
-                  }
-                }}
-              >
-                <h3 className="mb-1 text-sm font-medium text-zinc-50">Response Drift</h3>
-                <p className="text-sm text-zinc-400">Unclear, unconstrained or in some cases over-explained requests that cause the model to drift outside of your intended scope.</p>
-              </div>
-            </div>
+      {/* Features Section */}
+      <div className="grid gap-8 px-4 py-16 md:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-6">
+          <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/20">
+            <div className="h-2 w-2 rounded-full bg-blue-500" />
           </div>
+          <h3 className="mb-2 text-xl font-medium text-zinc-50">Knowledge Assumptions</h3>
+          <p className="text-zinc-400">
+            Identify when your prompts assume knowledge that the AI model might not have access to.
+          </p>
         </div>
 
-        {/* Response Panel */}
-        <div className="flex flex-col">
-          <div className="flex items-center justify-between border-b border-zinc-800 p-4">
-            <span className="text-xs font-medium text-zinc-400">ANALYSIS</span>
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-6">
+          <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500/20">
+            <div className="h-2 w-2 rounded-full bg-yellow-500" />
           </div>
-          <div className="flex-1 p-4">
-            <div className="space-y-4">
-              {selectedAnalysis ? (
-                <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
-                  <div className="mb-4 flex items-center gap-x-2">
-                    <span className={`h-2 w-2 rounded-full ${
-                      selectedAnalysis.type === 'assumption' ? 'bg-blue-500' :
-                      selectedAnalysis.type === 'ambiguity' ? 'bg-yellow-500' :
-                      selectedAnalysis.type === 'technical' ? 'bg-red-500' :
-                      'bg-purple-500'
-                    }`} />
-                    <span className="text-sm font-medium text-zinc-200">
-                      {selectedAnalysis.type.charAt(0).toUpperCase() + selectedAnalysis.type.slice(1)} Detected
-                    </span>
-                  </div>
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="mb-1 text-xs font-medium text-zinc-400">HIGHLIGHTED TEXT</h4>
-                      <p className="text-sm text-zinc-200">&ldquo;{selectedAnalysis.text}&rdquo;</p>
-                    </div>
-                    <div>
-                      <h4 className="mb-1 text-xs font-medium text-zinc-400">SUGGESTION</h4>
-                      <p className="text-sm text-zinc-200">{selectedAnalysis.suggestion}</p>
-                    </div>
-                    <div>
-                      <h4 className="mb-1 text-xs font-medium text-zinc-400">EXPLANATION</h4>
-                      <p className="text-sm text-zinc-200">{selectedAnalysis.explanation}</p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
-                  <h3 className="mb-2 text-sm font-medium text-zinc-200">Click on underlined text to see suggestions</h3>
-                  <p className="text-sm text-zinc-400">
-                    Blue underlines indicate assumptions that might need clarification
-                    <br />
-                    Yellow underlines indicate instructions that could be interpreted in multiple ways
-                    <br />
-                    Red underlines are instructions that contradict each other
-                    <br />
-                    Purple underlines indicate sections that could lead the model to drift/extend beyond the primary task
-                  </p>
-                </div>
-              )}
+          <h3 className="mb-2 text-xl font-medium text-zinc-50">Ambiguous Instructions</h3>
+          <p className="text-zinc-400">
+            Detect vague or unclear instructions that could be interpreted in multiple ways.
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-6">
+          <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-red-500/20">
+            <div className="h-2 w-2 rounded-full bg-red-500" />
+          </div>
+          <h3 className="mb-2 text-xl font-medium text-zinc-50">Conflicting Instructions</h3>
+          <p className="text-zinc-400">
+            Spot contradictory directions that cannot be simultaneously satisfied by the AI.
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-6">
+          <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-purple-500/20">
+            <div className="h-2 w-2 rounded-full bg-purple-500" />
+          </div>
+          <h3 className="mb-2 text-xl font-medium text-zinc-50">Response Drift</h3>
+          <p className="text-zinc-400">
+            Identify prompts that could cause the AI to generate content beyond your intended scope.
+          </p>
+        </div>
+      </div>
+
+      {/* How It Works Section */}
+      <div className="border-t border-zinc-800 px-4 py-16">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="mb-8 text-center text-3xl font-bold text-zinc-50">How It Works</h2>
+          <div className="space-y-8">
+            <div className="flex flex-col gap-4 md:flex-row">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-zinc-50">
+                1
+              </div>
+              <div>
+                <h3 className="mb-2 text-xl font-medium text-zinc-50">Enter Your Prompt</h3>
+                <p className="text-zinc-400">
+                  Type or paste your AI prompt into the editor. Resonnet works with prompts for any AI model.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-4 md:flex-row">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-zinc-50">
+                2
+              </div>
+              <div>
+                <h3 className="mb-2 text-xl font-medium text-zinc-50">Review Analysis</h3>
+                <p className="text-zinc-400">
+                  Resonnet automatically highlights potential issues in your prompt with color-coded underlines.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-4 md:flex-row">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-zinc-50">
+                3
+              </div>
+              <div>
+                <h3 className="mb-2 text-xl font-medium text-zinc-50">Improve Your Prompt</h3>
+                <p className="text-zinc-400">
+                  Apply the suggested improvements to create clearer, more effective prompts that get better results.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* API Key Dialog - Now closable */}
+      {/* CTA Section */}
+      <div className="border-t border-zinc-800 px-4 py-16 text-center">
+        <h2 className="mb-4 text-3xl font-bold text-zinc-50">Ready to improve your AI prompts?</h2>
+        <p className="mb-8 text-zinc-400">
+          Start crafting clearer, more effective prompts today.
+        </p>
+        <Link href="/app">
+          <Button size="lg">Get Started</Button>
+        </Link>
+      </div>
+
+      {/* Footer */}
+      <div className="mt-auto border-t border-zinc-800 px-4 py-6 text-center text-sm text-zinc-500">
+        <p>© {new Date().getFullYear()} Resonnet. All rights reserved.</p>
+      </div>
+
+      {/* API Key Dialog */}
       {showApiKeyDialog && (
         <ApiKeyDialog 
           onSubmit={(newKey) => {
